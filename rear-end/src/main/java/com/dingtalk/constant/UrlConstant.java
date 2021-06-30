@@ -9,17 +9,30 @@ public class UrlConstant {
      * 获取access_token url
      */
     public static final String GET_ACCESS_TOKEN_URL = "https://oapi.dingtalk.com/gettoken";
-
     /**
-     * 获取角色list url
+     * 初始化家校 url
      */
-    public static final String GET_ROLE_LIST = "https://oapi.dingtalk.com/topapi/role/list";
-
+    public static final String HOMESCHOOL_INIT = "https://oapi.dingtalk.com/topapi/edu/school/init";
     /**
-     * 获取角色详细信息 url（role_id）
+     * 查询部门列表 url
      */
-    public static final String GET_ROLE_SIMPLE_LIST = "https://oapi.dingtalk.com/topapi/role/simplelist";
-
+    public static final String DEPT_LIST = "https://oapi.dingtalk.com/topapi/edu/dept/list";
+    /**
+     * 新建班级 url
+     */
+    public static final String CLASS_CREATE = "https://oapi.dingtalk.com/topapi/edu/class/create";
+    /**
+     * 添加家长 url
+     */
+    public static final String GUARDIAN_CREATE = "https://oapi.dingtalk.com/topapi/edu/guardian/create";
+    /**
+     * 获取人员列表 url
+     */
+    public static final String EDU_USER_LIST = "https://oapi.dingtalk.com/topapi/edu/user/list";
+    /**
+     * 发送通知 url
+     */
+    public static final String SEND_NOTI_URL = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
     /**
      * 新增待办任务 url
      */
