@@ -18,6 +18,10 @@ public class UrlConstant {
      */
     public static final String DEPT_LIST = "https://oapi.dingtalk.com/topapi/edu/dept/list";
     /**
+     * 查询学生信息 url
+     */
+    public static final String STUDENTINFO_GET = "https://oapi.dingtalk.com/topapi/edu/class/studentinfo/get";
+    /**
      * 新建班级 url
      */
     public static final String CLASS_CREATE = "https://oapi.dingtalk.com/topapi/edu/class/create";

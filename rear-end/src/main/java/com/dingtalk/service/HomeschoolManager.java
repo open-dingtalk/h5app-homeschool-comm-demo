@@ -40,7 +40,9 @@ public class HomeschoolManager {
         OapiEduDeptListRequest req = new OapiEduDeptListRequest();
         req.setPageSize(pageSize);
         req.setPageNo(pageNo);
-        req.setSuperId(deptId);
+        if(deptId != null){
+            req.setSuperId(deptId);
+        }
         OapiEduDeptListResponse rsp = client.execute(req, accessToken);
         System.out.println(rsp.getBody());
         return rsp;
@@ -118,6 +120,19 @@ public class HomeschoolManager {
         return rsp;
     }
 
+    /**
+     * 获取学生信息
+     */
+    public OapiEduClassStudentinfoGetResponse getStudentInfo(Long classId, String userId) throws ApiException {
+        String accessToken = AccessTokenUtil.getAccessToken();
 
-
+        DingTalkClient client = new DefaultDingTalkClient(UrlConstant.STUDENTINFO_GET);
+        OapiEduClassStudentinfoGetRequest req = new OapiEduClassStudentinfoGetRequest();
+        req.setAppId(AppConstant.AGENT_ID);
+        req.setClassId(classId);
+        req.setUserid(userId);
+        OapiEduClassStudentinfoGetResponse rsp = client.execute(req, accessToken);
+        System.out.println(rsp.getBody());
+        return rsp;
+    }
 }
