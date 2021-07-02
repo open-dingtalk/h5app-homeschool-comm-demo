@@ -58,32 +58,38 @@ public class HomeschoolController {
     }
 
     /**
-     * 发送通知
+     * 发送放学通知
      *
      * @param paramMap
      * @return
      * @throws ApiException
      */
     @PostMapping("/sendMsg")
-    public RpcServiceResult sendMsg(@RequestBody Map paramMap) {
-        String userList = paramMap.get("stuList").toString();
+    public RpcServiceResult sendMsg(@RequestBody Map paramMap) throws ApiException {
+        System.out.println(paramMap);
         String content = paramMap.get("text").toString();
+        String title = paramMap.get("title").toString();
+        String time = paramMap.get("time").toString();
         Long classId = Long.parseLong(paramMap.get("classId").toString());
+        String userList = JSON.toJSONString(paramMap.get("stuList"));
         List<Map> list = JSONArray.parseArray(userList, Map.class);
+        // 班级人员关系
+        OapiEduUserRelationListResponse rsp = homeschoolManager.getClassRelationList(1L, 30L, classId);
+        List<OapiEduUserRelationListResponse.OpenEduUserRelationDetail> relations = rsp.getResult().getRelations();
+        System.out.println(JSON.toJSONString(rsp));
         list.forEach(e -> {
             String id = e.get("id").toString();
             String name = e.get("name").toString();
+            List<String> ids = relations.stream().filter(a -> id.equals(a.getToUserid())).map(OapiEduUserRelationListResponse.OpenEduUserRelationDetail::getFromUserid).collect(Collectors.toList());
+            String useridStr = ids.stream().collect(Collectors.joining(","));
             try {
-                OapiEduClassStudentinfoGetResponse rsp = homeschoolManager.getStudentInfo(classId, id);
-                List<OapiEduClassStudentinfoGetResponse.OpenPatriarchSelectDto> guardians = rsp.getResult().getGuardians();
-                List<String> ids = guardians.stream().map(OapiEduClassStudentinfoGetResponse.OpenPatriarchSelectDto::getUserid).collect(Collectors.toList());
-                String useridStr = ids.stream().collect(Collectors.joining(","));
-                homeschoolManager.sendNotification(useridStr, name + content);
+                homeschoolManager.sendNotification(useridStr, title,"### " + name + "同学" + content + time);
             } catch (ApiException apiException) {
                 apiException.printStackTrace();
             }
         });
         return RpcServiceResult.getSuccessResult(null);
     }
+
 
 }

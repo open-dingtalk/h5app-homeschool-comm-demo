@@ -10,6 +10,9 @@ import com.dingtalk.util.AccessTokenUtil;
 import com.taobao.api.ApiException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 家校管理
  */
@@ -100,7 +103,7 @@ public class HomeschoolManager {
      *
      * @throws ApiException
      */
-    public OapiMessageCorpconversationAsyncsendV2Response sendNotification(String userIdList, String content) throws ApiException {
+    public OapiMessageCorpconversationAsyncsendV2Response sendNotification(String userIdList,String title, String content) throws ApiException {
         String accessToken = AccessTokenUtil.getAccessToken();
 
         DingTalkClient client = new DefaultDingTalkClient(UrlConstant.SEND_NOTI_URL);
@@ -110,12 +113,45 @@ public class HomeschoolManager {
         request.setToAllUser(false);
 
         OapiMessageCorpconversationAsyncsendV2Request.Msg msg = new OapiMessageCorpconversationAsyncsendV2Request.Msg();
-        msg.setMsgtype("text");
-        msg.setText(new OapiMessageCorpconversationAsyncsendV2Request.Text());
-        msg.getText().setContent(content);
+        OapiMessageCorpconversationAsyncsendV2Request.ActionCard actionCard = new OapiMessageCorpconversationAsyncsendV2Request.ActionCard();
+        actionCard.setTitle(title);
+        actionCard.setMarkdown(content);
+        actionCard.setBtnOrientation("1");
+
+        List<OapiMessageCorpconversationAsyncsendV2Request.BtnJsonList> btnJsonListList = new ArrayList<>();
+        OapiMessageCorpconversationAsyncsendV2Request.BtnJsonList btnJsonList = new OapiMessageCorpconversationAsyncsendV2Request.BtnJsonList();
+        btnJsonList.setTitle("收到");
+        btnJsonList.setActionUrl("http://abcdefg.vaiwan.com/confirm");//此处可替换成服务相关链接
+        btnJsonListList.add(btnJsonList);
+        actionCard.setBtnJsonList(btnJsonListList);
+
+        msg.setMsgtype("action_card");
+        msg.setActionCard(actionCard);
         request.setMsg(msg);
 
         OapiMessageCorpconversationAsyncsendV2Response rsp = client.execute(request, accessToken);
+        System.out.println(rsp.getBody());
+        return rsp;
+    }
+
+    /**
+     * 获取班级人员关系
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param classId
+     * @return
+     * @throws ApiException
+     */
+    public OapiEduUserRelationListResponse getClassRelationList(Long pageNo, Long pageSize, Long classId) throws ApiException {
+        String accessToken = AccessTokenUtil.getAccessToken();
+
+        DingTalkClient client = new DefaultDingTalkClient(UrlConstant.RELATION_LIST);
+        OapiEduUserRelationListRequest req = new OapiEduUserRelationListRequest();
+        req.setPageNo(pageNo);
+        req.setPageSize(pageSize);
+        req.setClassId(classId);
+        OapiEduUserRelationListResponse rsp = client.execute(req, accessToken);
         System.out.println(rsp.getBody());
         return rsp;
     }

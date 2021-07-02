@@ -4,6 +4,50 @@ import React from 'react';
 import './App.css';
 import { withRouter } from 'react-router-dom';
 
+function Classes (props) {
+    if (props.showType === 1) {
+        return (
+            <div>
+                <h3>{props.className}</h3>
+                <h4>放学通知</h4>
+                {
+                    props.students.map((item, i) =>
+                        <label key={"stu" + i}>
+                            <input type="checkbox" value={item.userid} name={item.name} onChange={props.addUser}/>
+                            <span>{item.name}</span>
+                        </label>
+                    )
+                }
+                <p>放学时间：<input type="date" value={props.time} onChange={props.onChange}/></p>
+                <p>
+                    <button onClick={props.onClick}>发送放学通知</button>
+                </p>
+            </div>
+        )
+    } else {
+        return <div></div>
+    }
+}
+
+function DeptList(props){
+    if(props.showType === 0){
+        return(
+            <div>
+                <h3>选择部门：</h3>
+                {
+                    props.deptList.map((item, i) =>
+                        <div key={i}>
+                            <p><u><span onClick={(e) => props.chooseDept(e, item.deptId, item.deptType, item.name)}>{item.name}</span></u></p>
+                        </div>
+                    )
+                }
+            </div>
+        )
+    }else{
+        return <div></div>
+    }
+}
+
 class App extends React.Component{
     constructor(props) {
         super(props);
@@ -17,18 +61,17 @@ class App extends React.Component{
             userId: '',
             userName: '',
             deptList:[],
-            deptId:0,
-            classInfo:{
-                classId: '',
-                className: '',
-                classUserList: [],
-                classFlag: false
-            },
+            deptId: 0,
+            students: [],
+            classUserList: [],
+            showType:0,
+            className: '',
+            classId: '',
             sendMessage:{
-                classId: '',
                 stuList:[],
-                text:"放学时间为：",
-                time:""
+                title:"放学通知",
+                text:"放学时间为",
+                time:"",
             }
         }
     }
@@ -45,61 +88,41 @@ class App extends React.Component{
         })
     }
     setTime(e){
-        console.log("time:", e.target.value)
+        alert("time:", e.target.value)
         let msg = this.state.sendMessage;
         msg.time = e.target.value;
-        msg.text += msg.time;
         this.setState({
             sendMessage: msg
         })
     }
     sendMsg(e){
         let msg = this.state.sendMessage;
-        msg.classId = this.state.classInfo.classId;
+        msg.classId = this.state.classId;
         this.setState({
             sendMessage: msg
         })
         axios.post(this.state.domain + "/homeschool/sendMsg", JSON.stringify(this.state.sendMessage),
             {headers:{"Content-Type":"application/json"}}
         ).then(res => {
-                alert("tongzhi：" + JSON.stringify(res));
+                alert("放学通知已发出！");
                 this.setState({
                     sendMessage:{
-                        classId: '',
                         stuList:[],
+                        title:"放学通知",
                         text:"放学时间为：",
                         time:""
                     },
                 })
             }).catch(error => {
-            alert(JSON.stringify(error))
+            alert("tongzhi err " + JSON.stringify(error))
         })
     }
     render() {
         if(this.state.userId === ''){
             this.login();
         }
-
         let deptOptions;
-        let showClass;
-        if(this.state.classInfo.classFlag){
-            showClass =
-                <div>
-                    <h3>{this.state.classInfo.className}</h3>
-                    <h4>放学通知</h4>
-                    {
-                        this.state.classInfo.classUserList.map((item, i) =>
-                            <label>
-                                <input type="checkbox" value={item.userid} name={item.name} onChange={(e) => this.addUser(e)}/>
-                                <span>{item.name}</span>
-                            </label>
-                        )
-                    }
-                    <p><input type="date" value={this.sendMessage.time} onChange={(e) => this.state.setTime(e)}/></p>
-                    <p><button onClick={(e) => this.sendMsg(e)}>发送放学通知</button></p>
-                </div>
-            deptOptions = <div></div>
-        }else{
+        if(this.state.showType === 0){
             deptOptions =
                 <div>
                     <h3>选择部门：</h3>
@@ -111,50 +134,63 @@ class App extends React.Component{
                         )
                     }
                 </div>
-            showClass = <div></div>
+        }else{
+            deptOptions = <div></div>
         }
         return(
             <div>
                 {deptOptions}
-                {showClass}
+                <Classes
+                    showType={this.state.showType}
+                    students={this.state.students}
+                    className={this.state.className}
+                    addUser={(e) => this.addUser(e)}
+                    onChange={(e) => this.setTime(e)}
+                    time={this.state.sendMessage.time}
+                    onClick={(e) => this.sendMsg(e)}
+                />
             </div>
         )
     }
     chooseDept(e, deptId, deptType, name){
+        console.log("chooseDept deptId : " + deptId);
         if(deptType === 'class'){
-            this.getClassUserList(deptId,name);
+            this.setState({
+                classId: deptId,
+                className: name
+            });
+            this.getClassUserList(deptId);
         }else{
             this.setState({
                 deptId: deptId
             })
-            this.getDeptList();
+            this.getDeptList(deptId);
         }
     }
-    getClassUserList(classId,name){
+    getClassUserList(classId){
         axios.get(this.state.domain + "/homeschool/classUserList?classId=" + classId)
             .then(res => {
-                alert("班级学生：" + JSON.stringify(res.data.data.result.details));
+                // alert("class list :" + JSON.stringify(res.data.data.result.details));
+                alert("students --- ")
                 this.setState({
-                    classInfo:{
-                        classId: classId,
-                        className: name,
-                        classUserList: res.data.data.result.details,
-                        classFlag: true
-                    },
-                })
+                    students: res.data.data.result.details,
+                    showType:1
+                });
+                // alert("classUserList --- " + JSON.stringify(this.state.students))
             }).catch(error => {
-            alert(JSON.stringify(error))
+            alert("class err " + JSON.stringify(error))
         })
     }
-    getDeptList(){
-        axios.get(this.state.domain + "/homeschool/deptList?deptId=" + this.state.deptId)
+    getDeptList(deptId){
+        axios.get(this.state.domain + "/homeschool/deptList?deptId=" + deptId)
             .then(res => {
-                alert("dept list :" + JSON.stringify(res.data.data.result.details));
+                // alert("dept list :" + JSON.stringify(res.data.data.result.details));
                 this.setState({
                     deptList: res.data.data.result.details,
-                })
+                    showType:0
+                });
             }).catch(error => {
-            alert(JSON.stringify(error))
+            alert("dept err " + JSON.stringify(error))
         })
     }
 
@@ -175,17 +211,17 @@ class App extends React.Component{
                             userId:userId,
                             userName:userName
                         })
-                        _this.getDeptList();
+                        _this.getDeptList(0);
                     } else {
-                        alert("httpRequest failed --->", res);
+                        alert("login failed --->", res);
                     }
                 }).catch(error => {
-                    alert(JSON.stringify(error))
+                    alert("httpRequest failed --->",JSON.stringify(error))
                 })
             },
             onFail : function(err) {
                 // 调用失败时回调
-                alert(JSON.stringify(err))
+                alert("requestAuthCode failed --->",JSON.stringify(err))
 
             }
         });

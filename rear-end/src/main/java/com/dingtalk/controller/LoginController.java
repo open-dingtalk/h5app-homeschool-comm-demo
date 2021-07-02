@@ -27,6 +27,10 @@ public class LoginController {
         return "welcome";
     }
 
+    @GetMapping("/confirm")
+    public String confirm(){
+        return "已收到";
+    }
 
     /**
      * 根据免登授权码, 获取登录用户身份
