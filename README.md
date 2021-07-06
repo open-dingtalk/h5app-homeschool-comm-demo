@@ -50,7 +50,7 @@ git clone https://github.com/open-dingtalk/h5app-homeschool-comm-demo.git
 
 **修改企业id**
 
-![image-20210705175836260](https://img.alicdn.com/imgextra/i4/O1CN01Mw54Wz1kkGWCn5tlz_!!6000000004721-2-tps-880-395.png)
+![image-20210705175836260](https://img.alicdn.com/imgextra/i3/O1CN01bia0MI1k3fgUVsxrr_!!6000000004628-2-tps-863-381.png)
 
 
 
@@ -64,13 +64,13 @@ npm run build
 
 **将编译好的静态资源文件放入后端static文件**
 
-![image-20210705180329831](https://img.alicdn.com/imgextra/i3/O1CN01PWdn6H25d2CDFKe5Y_!!6000000007548-2-tps-331-535.png)
+![image-20210705180329831](https://img.alicdn.com/imgextra/i2/O1CN01QLp1Qw1TCVrPddfjZ_!!6000000002346-2-tps-322-521.png)
 
 
 
 **修改后端配置中的app_key、app_secret、agent_id**
 
-![image-20210705180600483](https://img.alicdn.com/imgextra/i4/O1CN01d2lNes1o7ZWDkSb5g_!!6000000005178-2-tps-860-404.png)
+![image-20210705180600483](https://img.alicdn.com/imgextra/i4/O1CN013T5AIB1XgWH2FAV9O_!!6000000002953-2-tps-848-380.png)
 
 
 
