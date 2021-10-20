@@ -66,7 +66,8 @@ public class HomeschoolController {
      */
     @PostMapping("/sendMsg")
     public RpcServiceResult sendMsg(@RequestBody Map paramMap) throws ApiException {
-        System.out.println(paramMap);
+        System.out.println(JSON.toJSONString(paramMap));
+        String origin = paramMap.get("origin").toString();
         String content = paramMap.get("text").toString();
         String title = paramMap.get("title").toString();
         String time = paramMap.get("time").toString();
@@ -83,7 +84,7 @@ public class HomeschoolController {
             List<String> ids = relations.stream().filter(a -> id.equals(a.getToUserid())).map(OapiEduUserRelationListResponse.OpenEduUserRelationDetail::getFromUserid).collect(Collectors.toList());
             String useridStr = ids.stream().collect(Collectors.joining(","));
             try {
-                homeschoolManager.sendNotification(useridStr, title,"### " + name + "同学" + content + time);
+                homeschoolManager.sendNotification(origin, useridStr, title,"### " + name + "同学" + content + time);
             } catch (ApiException apiException) {
                 apiException.printStackTrace();
             }

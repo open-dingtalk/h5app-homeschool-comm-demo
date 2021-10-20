@@ -1,5 +1,6 @@
 package com.dingtalk.controller;
 
+import com.dingtalk.config.AppConfig;
 import com.dingtalk.model.RpcServiceResult;
 import com.dingtalk.service.UserManager;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +56,14 @@ public class LoginController {
             ex.printStackTrace();
             return RpcServiceResult.getFailureResult("-1", "login exception");
         }
+    }
+
+    /**
+     * 获取corpId
+     * @return
+     */
+    @RequestMapping(value = "/getCorpId", method = RequestMethod.GET)
+    public String getCorpId() {
+        return AppConfig.getCorpId();
     }
 }

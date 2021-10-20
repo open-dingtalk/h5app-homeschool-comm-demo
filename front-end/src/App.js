@@ -55,7 +55,7 @@ class App extends React.Component{
             //内网穿透工具介绍:
             // https://developers.dingtalk.com/document/resourcedownload/http-intranet-penetration?pnamespace=app
             // 替换成后端服务域名
-            domain: "http://abcdefg.vaiwan.com",
+            domain: "",
             corpId: '',
             authCode: '',
             userId: '',
@@ -67,6 +67,7 @@ class App extends React.Component{
             showType:0,
             className: '',
             classId: '',
+            origin: '',
             sendMessage:{
                 stuList:[],
                 title:"放学通知",
@@ -98,10 +99,8 @@ class App extends React.Component{
     sendMsg(e){
         let msg = this.state.sendMessage;
         msg.classId = this.state.classId;
-        this.setState({
-            sendMessage: msg
-        })
-        axios.post(this.state.domain + "/homeschool/sendMsg", JSON.stringify(this.state.sendMessage),
+        msg.origin = this.state.origin;
+        axios.post(this.state.domain + "/homeschool/sendMsg", JSON.stringify(msg),
             {headers:{"Content-Type":"application/json"}}
         ).then(res => {
                 alert("放学通知已发出！");
@@ -120,6 +119,12 @@ class App extends React.Component{
     render() {
         if(this.state.userId === ''){
             this.login();
+        }
+        if(this.state.origin === ''){
+            let origin = window.location.origin;
+            this.setState({
+                origin: origin
+            })
         }
         let deptOptions;
         if(this.state.showType === 0){
@@ -194,10 +199,21 @@ class App extends React.Component{
         })
     }
 
-    login() {
+    login(){
+        axios.get(this.state.domain + "/getCorpId")
+            .then(res => {
+                if(res.data) {
+                    this.loginAction(res.data);
+                }
+            }).catch(error => {
+            alert("corpId err, " + JSON.stringify(error))
+        })
+    }
+    loginAction(corpId) {
+        // alert("corpId: " +  corpId);
         let _this = this;
         dd.runtime.permission.requestAuthCode({
-            corpId: "ding9f50b15bccd16741",//企业 corpId
+            corpId: corpId,//企业 corpId
             onSuccess : function(res) {
                 // 调用成功时回调
                 _this.state.authCode = res.code
@@ -206,23 +222,24 @@ class App extends React.Component{
                     if (res && res.data.success) {
                         let userId = res.data.data.userId;
                         let userName = res.data.data.userName;
-                        alert('登陆成功，你好，' + userName);
-                        _this.setState({
-                            userId:userId,
-                            userName:userName
-                        })
+                        alert('登录成功，你好' + userName);
+                        setTimeout(function () {
+                            _this.setState({
+                                userId:userId,
+                                userName:userName
+                            })
+                        }, 0)
                         _this.getDeptList(0);
                     } else {
-                        alert("login failed --->", res);
+                        alert("login failed --->" + JSON.stringify(res));
                     }
                 }).catch(error => {
-                    alert("httpRequest failed --->",JSON.stringify(error))
+                    alert("httpRequest failed --->" + JSON.stringify(error))
                 })
             },
             onFail : function(err) {
                 // 调用失败时回调
-                alert("requestAuthCode failed --->",JSON.stringify(err))
-
+                alert("requestAuthCode failed --->" + JSON.stringify(err))
             }
         });
     }
