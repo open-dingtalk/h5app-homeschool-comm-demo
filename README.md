@@ -40,21 +40,34 @@
 
 
 
-### 运行
+### 运行前准备
 
-**下载项目**
+ 下载demo
 
 ```shell
-git clone https://github.com/open-dingtalk/h5app-homeschool-comm-demo.git
+git clone https://github.com/open-dingtalk/h5app-scene-group-demo.git
 ```
 
-**修改企业id**
+### 获取相应参数
 
-![image-20210705175836260](https://img.alicdn.com/imgextra/i3/O1CN01bia0MI1k3fgUVsxrr_!!6000000004628-2-tps-863-381.png)
+获取到以下参数，修改后端application.yaml
 
+```yaml
+app:
+  app_key: *****
+  app_secret: *****
+  agent_id: *****
+  corp_id: *****
+```
 
+参数获取方法：登录开发者后台
 
-**react编译打包**
+1. 获取corpId：https://open-dev.dingtalk.com/#/index
+2. 进入应用开发-企业内部开发-点击进入应用-基础信息-获取appKey、appSecret、agentId
+
+### 修改前端页面
+
+**打开项目，命令行中执行以下命令，编译打包生成build文件**
 
 ```shell
 cd front-end
@@ -62,53 +75,38 @@ npm install
 npm run build
 ```
 
-**将编译好的静态资源文件放入后端static文件**
+**将打包好的静态资源文件放入后端**
 
 ![image-20210705180329831](https://img.alicdn.com/imgextra/i2/O1CN01QLp1Qw1TCVrPddfjZ_!!6000000002346-2-tps-322-521.png)
 
+### 启动项目
 
-
-**修改后端配置中的app_key、app_secret、agent_id**
-
-![image-20210705180600483](https://img.alicdn.com/imgextra/i4/O1CN013T5AIB1XgWH2FAV9O_!!6000000002953-2-tps-848-380.png)
-
-
-
-**启动springboot，使用钉钉访问首页地址**
-
-
+- 启动springboot
+- 移动端钉钉点击工作台，找到创建的应用，进入应用
 
 ### 页面展示
 
-进入首页自动登录
-
-![image-20210705181408098](https://img.alicdn.com/imgextra/i3/O1CN01OW7d2Y1GczkxijXAe_!!6000000000644-2-tps-333-545.png)
-
 登陆后自动获取并展示学区列表
 
-![image-20210705182026058](https://img.alicdn.com/imgextra/i3/O1CN01whGdoK29mtB9CXIAU_!!6000000008111-2-tps-331-187.png)
+![image-20210705182026058](https://img.alicdn.com/imgextra/i2/O1CN01FI2zOp1QLj0JQqjVp_!!6000000001960-2-tps-445-364.png)
 
 点击学区，获取学段列表
 
-![image-20210705182105482](https://img.alicdn.com/imgextra/i2/O1CN01H75Wxo1lwSgC8wakV_!!6000000004883-2-tps-329-149.png)
+![image-20210705182105482](https://img.alicdn.com/imgextra/i3/O1CN01Glcjxi1G61GZQS8eS_!!6000000000572-2-tps-445-230.png)
 
 点击学段，获取年级列表
 
-![image-20210705182148560](https://img.alicdn.com/imgextra/i2/O1CN01Fgpczh1c6P7Tv1UG3_!!6000000003551-2-tps-331-216.png)
+![image-20210705182148560](https://img.alicdn.com/imgextra/i3/O1CN01NEZSXi28LZyM1C79c_!!6000000007916-2-tps-446-368.png)
 
 点击年级，获取班级列表
 
-![image-20210705181612508](https://img.alicdn.com/imgextra/i1/O1CN01iHkxZC1mB7LtilZQc_!!6000000004915-2-tps-332-207.png)
+![image-20210705181612508](https://img.alicdn.com/imgextra/i1/O1CN01JoBciI29APw7JnEBX_!!6000000008027-2-tps-449-180.png)
 
-点击班级，获取学生列表
+点击班级，选中学生发送通知
 
-![image-20210705182241175](https://img.alicdn.com/imgextra/i2/O1CN01kvlqWh1ym0eCKS2XP_!!6000000006620-2-tps-327-240.png)
+![image-20210705182241175](https://img.alicdn.com/imgextra/i4/O1CN01RWTqfB1wTZUlMXItM_!!6000000006309-2-tps-445-403.png)
 
-选中学生，向家长发送放学通知
-
-![image-20210705181741665](https://img.alicdn.com/imgextra/i1/O1CN01FN83xC1QlN9tSSKh1_!!6000000002016-2-tps-327-438.png)
-
-此时家长会收到通知消息
+家长收到通知消息
 
 ![image-20210705181852303](https://img.alicdn.com/imgextra/i1/O1CN01P1rHhi1oBEgkEEWFq_!!6000000005186-2-tps-327-147.png)
 
