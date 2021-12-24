@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${port}
   forward-headers-strategy: FRAMEWORK
 app:
   app_key: ${appKey}
